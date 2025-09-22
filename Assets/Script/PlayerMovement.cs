@@ -8,14 +8,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask ground;
     [SerializeField] private float radius;
+    [SerializeField] private AudioClip jumpSound;
 
     private Rigidbody2D playerRb;
     private Animator playerAnimator;
+    private AudioSource audioSource;
 
     void Start()
     {
-       playerRb = GetComponent<Rigidbody2D>();
-       playerAnimator = GetComponent<Animator>();
+        playerRb = GetComponent<Rigidbody2D>();
+        playerAnimator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -28,15 +31,18 @@ public class PlayerMovement : MonoBehaviour
             if (isGrounded)
             {
                 playerRb.AddForce(Vector2.up * upForce);
+
+                if (jumpSound != null && audioSource != null)
+                    audioSource.PlayOneShot(jumpSound);
             }
         }
     }
 
     private void OnDrawGizmos()
-    { 
+    {
         Gizmos.DrawWireSphere(groundCheck.position, radius);
-    }      
-    
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Obstacle"))
